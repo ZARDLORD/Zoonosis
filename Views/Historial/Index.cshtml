@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Pagin_Web_Zoonosis.Models.Historial>
+@using Pagin_Web_Zoonosis.Services
+@{
+    ViewData["Title"] = "Historial de movimientos";
+}
+
+<div class="container mt-3">
+    <h3 class="fw-bold mb-3">📜 Historial de movimientos</h3>
+    <form method="get" class="input-group mb-3">
+        <input name="q" value="@ViewBag.Q" class="form-control" placeholder="Buscar por usuario, acción, entidad o detalle..." />
+        <button class="btn btn-primary">Buscar</button>
+    </form>
+    <p class="text-muted small">Se muestran los últimos 300 movimientos.</p>
+    <table class="table table-sm table-striped">
+        <thead class="table-dark"><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>Detalle</th></tr></thead>
+        <tbody>
+            @foreach (var h in Model)
+            {
+                <tr>
+                    <td class="text-nowrap">@FechaHelper.ALocal(h.FechaHora).ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@h.UsuarioEmail</td>
+                    <td>@h.Accion</td>
+                    <td>@h.Entidad @(h.IDentidad.HasValue ? "#" + h.IDentidad : "")</td>
+                    <td>@h.Descripcion</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

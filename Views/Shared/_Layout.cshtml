@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Veterinaria Zoonosis</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @if (ViewData["OcultarNavbar"] != null && (bool)ViewData["OcultarNavbar"])
+    {
+        @* Si se activa el flag (como en Login.cshtml), renderiza únicamente el contenido sin menú *@
+            <main role="main">
+            @RenderBody()
+            </main>
+    }
+    else
+    {
+        @* Estructura principal con Sidebar desplegado a la izquierda *@
+            <div class="d-flex" id="wrapper" style="min-height: 100vh;">
+
+                <!-- Sidebar Lateral Izquierdo -->
+                <div class="bg-dark text-white p-3 d-flex flex-column justify-content-between" style="width: 260px; min-width: 260px;">
+                    <div>
+                        <!-- Encabezado / Logo -->
+                        <a asp-controller="Productos" asp-action="Index" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none fs-4 fw-bold">
+                            Zoonosis
+                        </a>
+                        <hr class="text-secondary" />
+
+                        <!-- Opciones de Navegación del Sistema -->
+                        <ul class="nav nav-pills flex-column mb-auto">
+
+                            <li class="nav-item">
+                                <a asp-controller="Home" asp-action="Index" class="nav-link text-white active">
+                                    Menu principal
+                                </a>
+                            </li>
+                                <li class="nav-item"><a asp-controller="Fichas" asp-action="Index" class="nav-link text-white">Fichas</a></li>
+    <li class="nav-item"><a asp-controller="Duenos" asp-action="Index" class="nav-link text-white">Dueños y mascotas</a></li>
+                        @if (User.IsInRole("Admin"))
+                        {
+            <li class="nav-item"><a asp-controller="Fichas" asp-action="Papelera" class="nav-link text-white">Papelera</a></li>
+            <li class="nav-item"><a asp-controller="Historial" asp-action="Index" class="nav-link text-white">Historial</a></li>
+                        }
+                        </ul>
+                    </div>
+
+                    <!-- Sección de Usuario y Cierre de Sesión al Pie del Sidebar -->
+                    <div class="border-top border-secondary pt-3 mt-auto">
+                        <div class="mb-2 text-truncate" title="@User.Identity?.Name">
+                            <small class="text-muted d-block">Usuario activo:</small>
+                            <span class="fw-semibold text-light">@User.Identity?.Name</span>
+                        </div>
+                        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
+                            🚪 Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contenido Principal (Aparece a la derecha del Sidebar) -->
+                <div class="flex-grow-1 p-4 bg-light">
+                    <main role="main" class="pb-3">
+                    @if (TempData["Mensaje"] is string msg)
+                    {
+                        <div class="alert alert-success">@msg</div>
+                    }
+                    @if (TempData["Error"] is string err)
+                    {
+                        <div class="alert alert-danger">@err</div>
+                    }
+                    @RenderBody()
+                    </main>
+                </div>
+
+            </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿@model Pagin_Web_Zoonosis.Models.EliminarDuenoViewModel
+@{
+    ViewData["Title"] = "Eliminar dueño";
+}
+
+<div class="container mt-3" style="max-width: 700px;">
+    <h3 class="fw-bold mb-3">Eliminar a @Model.Dueno.Nombre @Model.Dueno.Apellido</h3>
+
+    @if (Model.MascotasQueSeEliminan.Any())
+    {
+            <div class="alert alert-danger">
+                <strong>⚠️ Atención:</strong> estas mascotas tienen a este dueño como único dueño, por lo que
+                <strong>también se van a eliminar</strong>, junto con sus <strong>@Model.FichasQueSeEliminan ficha(s)</strong> (incluidas las de la papelera):
+                <ul class="mb-0 mt-2">
+                @foreach (var m in Model.MascotasQueSeEliminan)
+                {
+                    <li>@m.Nombre (@m.Especie)</li>
+                }
+                </ul>
+            </div>
+    }
+    @if (Model.MascotasQuePersisten.Any())
+    {
+            <div class="alert alert-info">
+                Estas mascotas tienen otros dueños y <strong>se conservan</strong> con sus fichas:
+                <ul class="mb-0 mt-2">
+                @foreach (var m in Model.MascotasQuePersisten)
+                {
+                    <li>@m.Nombre (@m.Especie)</li>
+                }
+                </ul>
+                En sus fichas viejas, el dueño figurará como "Dueño eliminado".
+            </div>
+    }
+    @if (!Model.MascotasQueSeEliminan.Any() && !Model.MascotasQuePersisten.Any())
+    {
+            <div class="alert alert-secondary">Este dueño no tiene mascotas asociadas.</div>
+    }
+
+    <form asp-action="Eliminar" asp-route-id="@Model.Dueno.IDdueño" method="post">
+        <button class="btn btn-danger">Sí, eliminar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

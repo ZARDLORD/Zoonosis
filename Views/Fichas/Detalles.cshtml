@@ -1,0 +1,71 @@
+﻿@model Pagin_Web_Zoonosis.Models.Ficha
+@using Pagin_Web_Zoonosis.Services
+@{
+    ViewData["Title"] = $"Ficha #{Model.NroFicha:D4}";
+}
+
+<div class="container mt-3">
+    <div class="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">&larr; Volver</a>
+        <h3 class="m-0 fw-bold">Ficha N° @Model.NroFicha.ToString("D4")</h3>
+        <span class="text-muted">@FechaHelper.ALocal(Model.FechaVisita).ToString("dd/MM/yyyy HH:mm")</span>
+        <div class="ms-auto d-flex gap-2">
+            <a asp-action="Editar" asp-route-id="@Model.NroFicha" class="btn btn-primary">✏️ Editar</a>
+            @if (User.IsInRole("Admin"))
+            {
+                    <form asp-action="Eliminar" asp-route-id="@Model.NroFicha" method="post" class="d-inline"
+                          onsubmit="return confirm('¿Enviar esta ficha a la papelera?');">
+                        <button class="btn btn-outline-danger">🗑️ Eliminar</button>
+                    </form>
+            }
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">👤 Dueño que trajo a la mascota</div>
+                <div class="card-body">
+                    @if (Model.Dueno != null)
+                    {
+                            <p class="mb-1"><strong>@Model.Dueno.Nombre @Model.Dueno.Apellido</strong></p>
+                            <p class="mb-1">DNI: @Model.Dueno.DNI</p>
+                            <p class="mb-1">Teléfono: @Model.Dueno.Telefono</p>
+                            <p class="mb-0">@Model.Dueno.Direccion, @Model.Dueno.Barrio</p>
+                    }
+                    else
+                    {
+                            <p class="fst-italic text-muted mb-0">Dueño eliminado</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">🐾 Mascota</div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>@Model.Mascota.Nombre</strong> (@Model.Mascota.Especie)</p>
+                    <p class="mb-1">Raza: @Model.Mascota.Raza</p>
+                    <p class="mb-1">Nacimiento: @Model.Mascota.FechaDeNacimiento.ToString("dd/MM/yyyy")</p>
+                    <p class="mb-1">Sexo: @Model.Mascota.Sexo · Castrado: @(Model.Mascota.Castrado ? "Sí" : "No")</p>
+                    <p class="mb-0">Dueños: @string.Join(", ", Model.Mascota.DuenoMascotas.Select(dm => dm.Dueno.Nombre + " " + dm.Dueno.Apellido))</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">🩺 Visita</div>
+                <div class="card-body" style="white-space: pre-wrap;">
+                    <p><strong>Veterinario a cargo:</strong> @(Model.Veterinario?.NombreCompleto ?? Model.Veterinario?.Email ?? "Sin veterinario asignado")</p>
+                    <p><strong>Peso:</strong> @(Model.Peso.HasValue ? Model.Peso.Value.ToString("0.##") + " kg" : "—")</p>
+                    <p><strong>Motivo de consulta:</strong> @Model.MotivoConsulta</p>
+                    <p><strong>Diagnóstico:</strong> @(Model.Diagnostico ?? "—")</p>
+                    <p><strong>Tratamiento:</strong> @(Model.Tratamiento ?? "—")</p>
+                    <p class="mb-0"><strong>Observaciones:</strong> @(Model.Observaciones ?? "—")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

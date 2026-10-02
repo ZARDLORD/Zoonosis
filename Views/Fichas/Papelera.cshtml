@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Pagin_Web_Zoonosis.Models.Ficha>
+@using Pagin_Web_Zoonosis.Services
+@{
+    ViewData["Title"] = "Papelera de fichas";
+}
+
+<div class="container mt-3">
+    <h3 class="fw-bold mb-3">🗑️ Papelera de fichas</h3>
+    <table class="table table-striped align-middle">
+        <thead class="table-dark">
+            <tr><th>N°</th><th>Mascota</th><th>Dueño</th><th>Eliminada el</th><th></th></tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="5" class="text-center text-muted">La papelera está vacía.</td></tr>
+            }
+            @foreach (var f in Model)
+            {
+                <tr>
+                    <td>#@f.NroFicha.ToString("D4")</td>
+                    <td>@f.Mascota.Nombre</td>
+                    <td>@(f.Dueno != null ? f.Dueno.Nombre + " " + f.Dueno.Apellido : "Dueño eliminado")</td>
+                    <td>@(f.FechaEliminacion.HasValue ? FechaHelper.ALocal(f.FechaEliminacion.Value).ToString("dd/MM/yyyy HH:mm") : "")</td>
+                    <td class="text-end">
+                        <form asp-action="Restaurar" asp-route-id="@f.NroFicha" method="post" class="d-inline">
+                            <button class="btn btn-sm btn-success">↩️ Restaurar</button>
+                        </form>
+                        <form asp-action="EliminarDefinitivo" asp-route-id="@f.NroFicha" method="post" class="d-inline"
+                              onsubmit="return confirm('Esto elimina la ficha de forma PERMANENTE. ¿Continuar?');">
+                            <button class="btn btn-sm btn-danger">Eliminar definitivamente</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

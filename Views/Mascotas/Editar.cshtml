@@ -1,0 +1,61 @@
+﻿@model Pagin_Web_Zoonosis.Models.EditarMascotaViewModel
+@{
+    ViewData["Title"] = "Editar mascota";
+}
+
+<div class="container mt-3" style="max-width: 700px;">
+    <h3 class="fw-bold mb-3">Editar mascota</h3>
+
+    <form asp-action="Editar" method="post" class="mb-4">
+        <input type="hidden" asp-for="IDmascota" />
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+        <div class="mb-3"><label class="form-label fw-bold">Nombre</label><input asp-for="Nombre" class="form-control" /></div>
+        <div class="row">
+            <div class="col-6 mb-3">
+                <label class="form-label fw-bold">Especie</label>
+                <select asp-for="Especie" class="form-select">
+                    <option value="Perro">Perro</option><option value="Gato">Gato</option><option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div class="col-6 mb-3"><label class="form-label fw-bold">Raza</label><input asp-for="Raza" class="form-control" /></div>
+        </div>
+        <div class="mb-3"><label class="form-label fw-bold">Fecha de nacimiento</label><input asp-for="FechaDeNacimiento" type="date" class="form-control" /></div>
+        <div class="row">
+            <div class="col-6 mb-3">
+                <label class="form-label fw-bold">Sexo</label>
+                <select asp-for="Sexo" class="form-select"><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select>
+            </div>
+            <div class="col-6 mb-3">
+                <label class="form-label fw-bold">¿Castrado?</label>
+                <select asp-for="Castrado" class="form-select"><option value="true">Sí</option><option value="false">No</option></select>
+            </div>
+        </div>
+        <button class="btn btn-primary">💾 Guardar</button>
+        @if (User.IsInRole("Admin"))
+        {
+        <a asp-action="Eliminar" asp-route-id="@Model.IDmascota" class="btn btn-outline-danger float-end">🗑️ Eliminar mascota</a>
+        }
+    </form>
+
+    <h5 class="fw-bold">Dueños</h5>
+    <ul class="list-group mb-3">
+        @foreach (var d in Model.Duenos)
+        {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>@d.Nombre @d.Apellido (DNI @d.DNI)</span>
+                @if (Model.Duenos.Count > 1)
+                {
+                            <form asp-action="QuitarDueno" asp-route-id="@Model.IDmascota" asp-route-idDueno="@d.IDdueño" method="post"
+                                  onsubmit="return confirm('¿Quitar a este dueño de la mascota?');">
+                                <button class="btn btn-sm btn-outline-danger">Quitar</button>
+                            </form>
+                }
+                </li>
+        }
+    </ul>
+
+    <form asp-action="AgregarDueno" asp-route-id="@Model.IDmascota" method="post" class="input-group">
+        <input name="dni" class="form-control" placeholder="DNI de otro dueño (ya registrado)" required />
+        <button class="btn btn-success">➕ Agregar dueño</button>
+    </form>
+</div>

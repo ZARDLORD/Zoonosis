@@ -1,0 +1,29 @@
+﻿@model Pagin_Web_Zoonosis.Models.EliminarMascotaViewModel
+@{
+    ViewData["Title"] = "Eliminar mascota";
+}
+
+<div class="container mt-3" style="max-width: 700px;">
+    <h3 class="fw-bold mb-3">Eliminar a @Model.Mascota.Nombre (@Model.Mascota.Especie)</h3>
+
+    <div class="alert alert-danger">
+        <strong>⚠️ Atención:</strong> al eliminar esta mascota también se van a eliminar de forma
+        <strong>permanente</strong> sus <strong>@Model.FichasQueSeEliminan ficha(s)</strong>
+        (incluidas las que estén en la papelera). Esta acción no se puede deshacer.
+    </div>
+
+    <div class="alert alert-info">
+        Los dueños <strong>no se eliminan</strong>:
+        <ul class="mb-0 mt-2">
+            @foreach (var d in Model.Duenos)
+            {
+                <li>@d.Nombre @d.Apellido (DNI @d.DNI)</li>
+            }
+        </ul>
+    </div>
+
+    <form asp-action="Eliminar" asp-route-id="@Model.Mascota.IDmascota" method="post">
+        <button class="btn btn-danger">Sí, eliminar mascota</button>
+        <a asp-action="Editar" asp-route-id="@Model.Mascota.IDmascota" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

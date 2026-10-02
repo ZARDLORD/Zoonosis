@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Pagin_Web_Zoonosis.Models.Dueno>
+@{
+    ViewData["Title"] = "Dueños y mascotas";
+}
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold m-0">👥 Dueños y mascotas</h3>
+        <a asp-controller="Fichas" asp-action="Crear" class="btn btn-success">➕ Nueva ficha (para dar de alta un dueño)</a>
+    </div>
+    <form method="get" class="input-group mb-3">
+        <input name="q" value="@ViewBag.Q" class="form-control" placeholder="Buscar por nombre o DNI..." />
+        <button class="btn btn-primary">Buscar</button>
+    </form>
+    <table class="table table-striped align-middle">
+        <thead class="table-dark"><tr><th>Dueño</th><th>DNI</th><th>Teléfono</th><th>Mascotas</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var d in Model)
+            {
+                <tr>
+                    <td>@d.Apellido, @d.Nombre</td>
+                    <td>@d.DNI</td>
+                    <td>@d.Telefono</td>
+                    <td>
+                        @foreach (var dm in d.DuenoMascotas)
+                        {
+                                <a asp-controller="Mascotas" asp-action="Editar" asp-route-id="@dm.IDmascota" class="badge text-bg-success text-decoration-none">@dm.Mascota.Nombre</a>
+                        }
+                    </td>
+                    <td class="text-end">
+                        <a asp-action="Editar" asp-route-id="@d.IDdueño" class="btn btn-sm btn-primary">Editar</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                                <a asp-action="Eliminar" asp-route-id="@d.IDdueño" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
